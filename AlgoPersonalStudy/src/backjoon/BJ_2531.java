@@ -14,8 +14,8 @@ public class BJ_2531 {
 		int k = Integer.parseInt(st.nextToken());
 		int c = Integer.parseInt(st.nextToken());
 		
+		int answer = 0;
 		int[] dishies = new int[N];
-		int[] overlaps = new int[N];
 		boolean cuponCheck = true;
 		for(int n=0;n<N;n++) {
 			dishies[n] = Integer.parseInt(br.readLine());
@@ -25,23 +25,21 @@ public class BJ_2531 {
 		for(int n=0;n<N;n++) {
 			int overlapCount = 0, repeat = k;
 			boolean cupon = true;
-			HashMap<Integer, Integer> hashMap = new HashMap<>();
+			boolean[] overlaps = new boolean[d+1];
+			
 			for(int r=0;r<repeat;r++) {
 				int point = n+r;
 				if(point >= N) point -= N;
-				if(dishies[point] == c && cupon && (r == 0 || r == repeat-1)) {
-					repeat++;
-					overlapCount--;
+				if(cupon && dishies[point] == c) {
 					cupon = false;
 				}
-				if(hashMap.containsKey(dishies[point])) overlapCount++;
-				else hashMap.put(dishies[point], 1);
+				if(overlaps[dishies[point]]) overlapCount++;
+				else overlaps[dishies[point]] = true;
 			}
-			overlaps[n] = k - overlapCount;
+			if(cupon && !cuponCheck) overlapCount--;
+			answer = Math.max(k - overlapCount, answer);
 		}
 		
-		int answer = overlaps[0];
-		for(int n=1;n<N;n++) answer = Math.max(answer, overlaps[n]);
 		if(cuponCheck) answer++;
 		System.out.println(answer);
 	}
