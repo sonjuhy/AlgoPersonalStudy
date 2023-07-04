@@ -26,9 +26,13 @@ public class BJ_1138 {
 				}
 			}
 			else {
-				for(int m=0;m <= arr[n];m++) {
-					if(answer[n+m] == 0) {
-						answer[n+m] = n+1;
+				int count = 0;
+				for(int m=0;m<N;m++) {
+					if(answer[m] != 0 && answer[m] < n+1) {
+						count++;
+					}
+					if(m == arr[n] + count) {
+						answer[m] = n+1;
 						break;
 					}
 				}
