@@ -32,19 +32,17 @@ public class BJ_10431 {
 				if(point >= 0) {
 					if(point>0) {
 						arr.remove(p);
-						arr.add(point-1, num);
-						answer += 19 - point;
+						arr.add(point, num);
+						answer += p - point;
 					}
 					else {
 						arr.remove(p);
 						arr.add(0, num);						
-						answer += 19;
+						answer += p - point;
 					}
-					System.out.println(point+", "+answer);
 					p = 1;
 				}
 			}
-			System.out.println("");
 			sb.append(answer+"\n");
 		}
 		System.out.println(sb.toString());
