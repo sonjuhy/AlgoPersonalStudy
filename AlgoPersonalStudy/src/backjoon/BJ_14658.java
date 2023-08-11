@@ -14,7 +14,7 @@ public class BJ_14658 {
 		int L = Integer.parseInt(st.nextToken());
 		int K = Integer.parseInt(st.nextToken());
 		
-		int xMax = L, xMin = 1, yMax = L, yMin = 1;
+		int xMax = 0, xMin = 500000, yMax = 0, yMin = 500000;
 		Point[] points = new Point[K];
 		
 		for(int k=0;k<K;k++) {
@@ -22,23 +22,31 @@ public class BJ_14658 {
 			int x = Integer.parseInt(st.nextToken());
 			int y = Integer.parseInt(st.nextToken());
 			points[k] = new Point(x,y);
-		}
-		int min = K;
-		for(int i=0;i<=N-L;i++) {
-			for(int j=0;j<=M-L;j++) {
-				int tmp = 0;
-				for(int k=0;k<K;k++) {
-					if(points[k].x >= xMin && points[k].x <= xMax && points[k].y >= yMin && points[k].y <= yMax) tmp++;
-				}
-				System.out.println(tmp);
-				min = Math.min(min, K-tmp);
-				yMax++;
-				yMin++;
+			if(xMax < x) {
+				xMax = x;
 			}
-			xMax++;
-			xMin++;
-			yMax = L;
-			yMin = 1;
+			if(xMin > x) {
+				xMin = x;
+			}
+			if(yMax < y) {
+				yMax = y;
+			}
+			if(yMin > y) {
+				yMin = y;
+			}
+		}
+		System.out.println(xMax+", "+xMin+", "+yMax+", "+yMin);
+		int min = K;
+		if(xMax - xMin > L || yMax - yMin > L) {
+			for(int i=xMin;i<=xMax;i++) {
+				for(int j=yMin;j<=yMax;j++) {
+					int tmp = 0;
+					for(int k=0;k<K;k++) {
+						if(points[k].x >= xMin && points[k].x <= xMin+L && points[k].y >= yMin && points[k].y <= yMin+L) tmp++;
+					}
+					min = Math.min(min, K-tmp);
+				}
+			}
 		}
 		System.out.println(min);
 	}
