@@ -64,10 +64,10 @@ public class BJ_8979 {
 					return -1;
 				}
 				else {
-					if(this.brone > o.brone) {
+					if(this.brone < o.brone) {
 						return 1;
 					}
-					else if(this.brone < o.brone) {
+					else if(this.brone > o.brone) {
 						return -1;
 					}
 					else {
