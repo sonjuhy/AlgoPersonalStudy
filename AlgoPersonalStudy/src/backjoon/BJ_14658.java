@@ -35,14 +35,13 @@ public class BJ_14658 {
 				yMin = y;
 			}
 		}
-		System.out.println(xMax+", "+xMin+", "+yMax+", "+yMin);
 		int min = K;
 		if(xMax - xMin > L || yMax - yMin > L) {
 			for(int i=xMin;i<=xMax;i++) {
 				for(int j=yMin;j<=yMax;j++) {
 					int tmp = 0;
 					for(int k=0;k<K;k++) {
-						if(points[k].x >= xMin && points[k].x <= xMin+L && points[k].y >= yMin && points[k].y <= yMin+L) tmp++;
+						if(points[k].x >= i && points[k].x <= i+L && points[k].y >= j && points[k].y <= j+L) tmp++;
 					}
 					min = Math.min(min, K-tmp);
 				}
