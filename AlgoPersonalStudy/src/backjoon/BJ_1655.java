@@ -11,18 +11,26 @@ public class BJ_1655 {
 		int N = Integer.parseInt(br.readLine());
 		
 		StringBuilder sb = new StringBuilder();
-		int[] arr = new int[N];
-		Arrays.fill(arr, Integer.MAX_VALUE);
+		
+		PriorityQueue<Integer> minQueue = new PriorityQueue<>(Collections.reverseOrder());
+		PriorityQueue<Integer> maxQueue = new PriorityQueue<>();
+		
+		
 		for(int n=0;n<N;n++) {
 			int num = Integer.parseInt(br.readLine());
-			arr[n] = num;
-			Arrays.sort(arr);
-			if((n&1) == 0) {
-				sb.append(arr[n/2]+"\n");
+			
+			if(minQueue.size() == maxQueue.size()) minQueue.add(num);
+			else maxQueue.add(num);
+			
+			if(!minQueue.isEmpty() && !maxQueue.isEmpty()) {
+				if(maxQueue.peek() < minQueue.peek()) {
+					int tmp = maxQueue.poll();
+					maxQueue.add(minQueue.poll());
+					minQueue.add(tmp);
+				}
 			}
-			else {
-				sb.append(arr[(n-1)/2]+"\n");
-			}
+			
+			sb.append(minQueue.peek()+"\n");
 		}
 		System.out.println(sb.toString());
 	}
