@@ -5,88 +5,124 @@ import java.util.*;
 public class PG_12927 {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		int[] works = {7,6};
-		int n = 3;
-		
-		Arrays.sort(works);
-		
-		int before = works[0];
-		int count = 1;
-		List<int[]> list = new ArrayList<>();
-		
-        for(int i=1;i<works.length;i++){
-        	if(before != works[i]) {
-        		list.add(new int[] {before, count});
-        		count = 1;
-        		before = works[i];
-        	}
-        	else {
-        		count++;
-        	}
-        }
-        list.add(new int[] {works[works.length-1], count});
-        
-        while(n != 0) {
-        	int[] beforeArr = list.get(list.size()-1);
-        	if(list.size() == 1) {
-        		if(n < list.get(0)[1] * list.get(0)[0]) {
-        			int divide = n / list.get(0)[1];
-            		int other = n % list.get(0)[1];
-        			list.get(0)[0] -= divide;
-            		if(other != 0) {
-            			list.get(0)[1] -= other;
-            			list.add(0, new int[] {list.get(0)[0] - 1, other});
-            		}
-        			break;
-        		}
-        		else {
-        			System.out.println(0);
-        			return;
-        		}
-        	}
-        	else {
-        		int size = list.size()-2;
-                if(list.size() < 2) size++;
-                for(int i=size;i>=0;i--) {
-                	int[] tmp = list.get(i);
-                	int diffWork = beforeArr[0] - tmp[0];
-                	int diffCount = beforeArr[1];
-                	if(diffWork * diffCount < n) {
-                		n -= diffWork * diffCount;
-                		list.get(i)[1] += beforeArr[1];
-                		list.remove(i+1);
-                		beforeArr = list.get(i);
-                	}
-                	else if(diffWork * diffCount == n) {
-                		list.get(i)[1] += beforeArr[1];
-                		list.remove(i+1);
-                		beforeArr = list.get(i);
-                		n = 0;
-                		break;
-                	}
-                	else {
-                		int divide = n / diffCount;
-                		int other = n % diffCount;
-            			list.get(i+1)[0] = beforeArr[0] - divide;
-                		if(other != 0) {
-                			list.get(i+1)[1] -= other;
-                			list.add(i+1, new int[] {beforeArr[0] - divide - 1, other});
-                		}
-                		
-                		n = 0;
-                		break;
-                	}
-                }
-        	}
-            
-        }
-        
-        long answer = 0;
-        for(int i=0;i<list.size();i++) {
-        	answer += Math.pow(list.get(i)[0], 2) * list.get(i)[1];
-        }
-        System.out.println(answer);
+		int n = 4;
+		int[] works = {4,3,3};
+		long result = solution(n, works);
+		System.out.println(result);
 	}
+	public static long solution(int n, int[] works){
+		long answer = 0;
+		Arrays.sort(works);
+		HashMap<Integer, Integer> hashMap = new HashMap<>();
+		hashMap.put(works[0],1);
+		int lenWorks = works.length;
 
+		for(int i=1;i<lenWorks;i++){
+			int work = works[i];
+			if(work != works[i-1]){
+				hashMap.put(work, 1);
+			}
+			else{
+				hashMap.replace(work, hashMap.get(work)+1);
+			}
+		}
+		PriorityQueue<Work> pq = new PriorityQueue<>(Collections.reverseOrder());
+		for(int key : hashMap.keySet()){
+			pq.add(new Work(key, hashMap.get(key)));
+		}
+		while(n > 0 && !pq.isEmpty()){
+			Work work = pq.poll();
+			if(work.count < n){
+				if(work.work > 1){
+					if(!pq.isEmpty()){
+						Work nextWork = pq.poll();
+						if(nextWork.work == work.work - 1){
+							nextWork.count += work.count;
+						}
+						else{
+							work.work -= 1;
+							pq.add(work);
+						}
+						pq.add(nextWork);
+						n -= work.count;
+					}
+					else{
+						work.work--;
+						n -= work.count;
+						pq.add(work);
+					}
+				}
+				else{
+					n -= work.count;
+				}
+			}
+			else if(work.count > n){
+				if(!pq.isEmpty()) {
+					work.count -= n;
+					Work nextWork = pq.poll();
+					if(nextWork.work == work.work-1){
+						nextWork.count += n;
+					}
+					else{
+						pq.add(new Work(work.work-1, n));
+					}
+					pq.add(work);
+					pq.add(nextWork);
+					n = 0;
+				}
+				else{
+					if(work.work > 1){
+						pq.add(new Work(work.work-1, work.count - n));
+					}
+					work.count -= n;
+					n = 0;
+					pq.add(work);
+				}
+			}
+			else{
+				if(!pq.isEmpty()) {
+					Work nextWork = pq.poll();
+					if(nextWork.work == work.work - 1) {
+						nextWork.count += n;
+					}
+					else{
+						work.work--;
+						pq.add(work);
+					}
+					pq.add(nextWork);
+				}
+				else{
+					if(work.work > 1){
+						work.work--;
+						pq.add(work);
+					}
+				}
+				n = 0;
+			}
+		}
+		if(n > 0) answer = 0;
+		else{
+			while(!pq.isEmpty()){
+				Work work = pq.poll();
+				long tired = (long) Math.pow(work.work,2) * work.count;
+				answer += tired;
+			}
+		}
+		return answer;
+	}
+	static class Work implements Comparable<Work>{
+		int work;
+		int count;
+		public Work(int work, int count){
+			this.work = work;
+			this.count = count;
+		}
+
+		@Override
+		public int compareTo(Work o) {
+			if(work < o.work) return -1;
+			else if(work > o.work) return 1;
+			return 0;
+		}
+	}
 }
