@@ -8,7 +8,7 @@ public class BJ_17141 {
     static int[][] map;
     static boolean success = false;
     static boolean[] checkedVirus;
-    static List<int[]> virus = new ArrayList<>();;
+    static List<int[]> virus = new ArrayList<>();
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
