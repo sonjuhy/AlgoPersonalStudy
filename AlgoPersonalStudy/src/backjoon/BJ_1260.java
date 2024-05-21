@@ -34,7 +34,7 @@ public class BJ_1260 {
 		boolean[] visited = new boolean[n+1];
 		int visitedCount = 1, point = v;
 		
-		sb.append((point)+" ");
+		sb.append(point).append(" ");
 		while(visitedCount < count) {
 			for(int i=1;i<=n;i++) {
 				if(visited[i]) continue;
@@ -42,7 +42,7 @@ public class BJ_1260 {
 					visited[point] = true;
 					point = i;
 					visitedCount++;
-					sb.append((point)+" ");
+					sb.append(point).append(" ");
 					break;
 				}
 			}
@@ -61,7 +61,7 @@ public class BJ_1260 {
 			int queueSize = queue.size();
 			for(int q=0;q<queueSize;q++) {
 				int num = queue.poll();
-				sb.append(num+" ");
+				sb.append(num).append(" ");
 				for(int i=1;i<=n;i++) {
 					if(visited[i]) continue;
 					if(map[num][i]) {
