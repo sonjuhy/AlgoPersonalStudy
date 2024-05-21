@@ -1,10 +1,12 @@
-package backjoon;
+package backjoon.silver;
 
 import java.io.*;
 import java.util.*;
 
 public class BJ_1260 {
 	static boolean[][] map;
+	static StringBuilder staticSb = new StringBuilder();
+
 	public static void main(String[] args) throws Exception{
 		// TODO Auto-generated method stub
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -12,8 +14,9 @@ public class BJ_1260 {
 		int N = Integer.parseInt(st.nextToken());
 		int M = Integer.parseInt(st.nextToken());
 		int V = Integer.parseInt(st.nextToken());
-		
-		HashMap<Integer, Integer> hash = new HashMap<>();
+
+		HashSet<Integer> dfsSet = new HashSet<>();
+		HashSet<Integer> bfsSet = new HashSet<>();
 		
 		map = new boolean[N+1][N+1];
 		for(int m=0;m<M;m++) {
@@ -22,38 +25,37 @@ public class BJ_1260 {
 			int b = Integer.parseInt(st.nextToken());
 			map[a][b] = true;
 			map[b][a] = true;
-			hash.put(a, b);
-			hash.put(b, a);
+			dfsSet.add(a);
+			dfsSet.add(b);
+			bfsSet.add(a);
+			bfsSet.add(b);
 		}
-		int count = hash.size();
-		DFS(V,N, count);
-		BFS(V,N);
+		if(dfsSet.contains(V)) {
+			DFS(dfsSet, V, 0);
+			System.out.println(staticSb.toString());
+			BFS(bfsSet, V, N);
+		}
+		else{
+			System.out.println(V);
+			System.out.println(V);
+		}
 	}
-	static void DFS(int v, int n, int count) {
-		StringBuilder sb = new StringBuilder();
-		boolean[] visited = new boolean[n+1];
-		int visitedCount = 1, point = v;
-		
-		sb.append(point).append(" ");
-		while(visitedCount < count) {
-			for(int i=1;i<=n;i++) {
-				if(visited[i]) continue;
-				if(map[point][i]) {
-					visited[point] = true;
-					point = i;
-					visitedCount++;
-					sb.append(point).append(" ");
-					break;
+	static void DFS(HashSet<Integer> hashSet, int v, int dep) {
+		if(!hashSet.isEmpty()){
+			staticSb.append(v).append(" ");
+			hashSet.remove(v);
+			List<Integer> tmpSetList = new ArrayList<>(hashSet);
+			for(int num : tmpSetList){
+				if(hashSet.contains(num)){
+					if(map[v][num]) {
+						DFS(hashSet, num, dep + 1);
+					}
 				}
 			}
 		}
-		System.out.println(sb.toString());
 	}
-	static void BFS(int v, int n) {
+	static void BFS(HashSet<Integer> hashSet, int v, int n) {
 		StringBuilder sb = new StringBuilder();
-		
-		boolean[] visited = new boolean[n+1];
-		visited[v] = true;
 		
 		Queue<Integer> queue = new LinkedList<>();
 		queue.add(v);
@@ -61,12 +63,12 @@ public class BJ_1260 {
 			int queueSize = queue.size();
 			for(int q=0;q<queueSize;q++) {
 				int num = queue.poll();
+				if(!hashSet.contains(num)) continue;
+				hashSet.remove(num);
 				sb.append(num).append(" ");
-				for(int i=1;i<=n;i++) {
-					if(visited[i]) continue;
-					if(map[num][i]) {
-						visited[i] = true;
-						queue.add(i);
+				for(int des : new ArrayList<>(hashSet)){
+					if(map[num][des]){
+						queue.add(des);
 					}
 				}
 			}
